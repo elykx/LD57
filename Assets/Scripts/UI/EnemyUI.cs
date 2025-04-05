@@ -17,11 +17,19 @@ public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 
     }
 
+    void Update()
+    {
+        if (currentEnemy != null && currentEnemy.Health <= 0)
+        {
+            G.enemyManager.RemoveEnemy(currentEnemy);
+            Destroy(gameObject);
+        }
+    }
+
     // Этот метод вызывается при клике на карту
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Card clicked: " + currentEnemy.Name);
-
+        G.enemyManager.ChoiceEnemy(currentEnemy);
     }
 
     // Этот метод вызывается при наведении на карту

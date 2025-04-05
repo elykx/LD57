@@ -17,3 +17,7 @@ public class ProgressCard : Card
         player.AddProgress(Progress);
     }
 }
+
+public static class ProgressCardLibrary {
+    public static ProgressCard DataHarvest = new ProgressCard("Data Harvest", 2, 15);
+}

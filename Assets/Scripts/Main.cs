@@ -10,7 +10,7 @@ public class Main : MonoBehaviour
     private void Start()
     {
         Debug.Log("Игра запущена.");
-        G.handManager.SetupPlayerHand();
+        G.playerManager.SetupPlayerHand();
         G.gameStateManager.SetGameState(GameState.LevelSetup);
     }
 }

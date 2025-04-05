@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-
-    public Player Player;
+    public Player Player = new Player();
 
     private void Awake()
     {

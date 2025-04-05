@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public enum GameState
@@ -21,11 +23,6 @@ public class GameStateManager : MonoBehaviour
         G.gameStateManager = this;
     }
 
-    private void Start()
-    {
-        SetGameState(GameState.MainMenu);  // Начинаем с главного меню
-    }
-
     public void SetGameState(GameState newState)
     {
         CurrentState = newState;
@@ -38,7 +35,9 @@ public class GameStateManager : MonoBehaviour
                 break;
 
             case GameState.LevelSetup:
+                StartCoroutine(DelayAction());
                 G.levelManager.LoadLevel(CurrentLevelNumber);  // Загружаем уровень
+                G.gameStateManager.SetGameState(GameState.PlayerTurn);
                 break;
 
             case GameState.PlayerTurn:
@@ -61,14 +60,29 @@ public class GameStateManager : MonoBehaviour
 
     private void StartPlayerTurn()
     {
-        // Игрок начинает ход
-        // Отображаем карты игрока, начинаем принимать ввод
+        G.levelManager.CheckCompleteLevel();
+        if (G.playerManager.Player.Health <= 0)
+        {
+            SetGameState(GameState.GameOver);
+            return;
+        }
+        if (G.levelManager.CurrentLevel.IsCompleted)
+        {
+            SetGameState(GameState.LevelComplete);
+            return;
+        }
+        if (G.playerManager.Player.Hand.Count() < 3)
+        {
+            G.handManager.SetupPlayerHand();
+        }
     }
 
     private void StartEnemyTurn()
     {
-        // Ход врагов
-        // Враги выполняют свои действия
+        Debug.Log("Enemy turn started.");
+
+        // Здесь враги ходят — можно сделать корутину для задержек
+        StartCoroutine(EnemyActionsRoutine());
     }
 
     private void CompleteLevel()
@@ -81,5 +95,30 @@ public class GameStateManager : MonoBehaviour
     {
         // Завершаем игру
         // Показываем экран Game Over
+    }
+
+    private IEnumerator EnemyActionsRoutine()
+    {
+        foreach (var enemy in G.enemyManager.Enemies)
+        {
+            Debug.Log(enemy);
+            if (enemy.Health <= 0) continue;
+
+            enemy.PerformAction(G.playerManager.Player); // Атака или действие
+
+            yield return new WaitForSeconds(0.5f); // Пауза между действиями
+        }
+
+        yield return new WaitForSeconds(0.5f); // Пауза перед передачей хода
+        SetGameState(GameState.PlayerTurn);
+    }
+
+    IEnumerator DelayAction()
+    {
+        // Задержка в 5 секунд
+        yield return new WaitForSeconds(5f);
+
+        // Действие после задержки
+        Debug.Log("5 секунд прошло!");
     }
 }

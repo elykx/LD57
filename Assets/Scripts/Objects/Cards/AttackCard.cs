@@ -17,3 +17,7 @@ public class AttackCard : Card
         target.TakeDamage(Damage);
     }
 }
+
+public static class AttackCardsLibrary {
+    public static AttackCard CyberSlash = new AttackCard("Cyber Slash", 2, 10);
+}

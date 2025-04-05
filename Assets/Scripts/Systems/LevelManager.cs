@@ -3,7 +3,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
 
-    public Level CurrentLevel;             // Текущий уровень
+    public Level CurrentLevel;
 
     private void Awake()
     {
@@ -17,27 +17,28 @@ public class LevelManager : MonoBehaviour
         switch (levelNumber)
         {
             case 1:
-                CurrentLevel = new Level("Level 1", "Взломать защиту системы", 1, 3, "Очистить систему от Malware.");
+                CurrentLevel = new Level("Level 1 bla-bla-bla", "Взломать защиту системы", 1, 3, new() { new EliminateAllEnemiesQuest() });
                 break;
             case 2:
-                CurrentLevel = new Level("Level 2", "Уничтожить ядро защиты", 2, 4, "Найти и уничтожить ядро защиты.");
+                CurrentLevel = new Level("Level 2", "Уничтожить ядро защиты", 2, 4, new() { new EliminateAllEnemiesQuest() });
                 break;
             default:
-                CurrentLevel = new Level("Level 1", "Взломать защиту системы", 1, 3, "Очистить систему от Malware.");
+                CurrentLevel = new Level("Level 1", "Взломать защиту системы", 1, 3, new() { new EliminateAllEnemiesQuest() });
                 break;
         }
 
         // Инициализируем врагов и карты для текущего уровня
-        CurrentLevel.InitializeEnemies();
+        CurrentLevel.Enemies = EnemiesConst.FirsLevelEnemies;
 
         // Отображаем врагов на экране
         G.enemyManager.SetupEnemies(CurrentLevel.Enemies);
         G.ui.SetLevelUI(CurrentLevel);
-        G.gameStateManager.SetGameState(GameState.LevelSetup);  // Переход к подготовке уровня
+        G.ui.SetPlayerUI(G.playerManager.Player);
+        // G.gameStateManager.SetGameState(GameState.LevelSetup);  // Переход к подготовке уровня
     }
 
     // Завершение уровня
-    public void CompleteLevel()
+    public void CheckCompleteLevel()
     {
         CurrentLevel.CheckCompletion();
     }

@@ -7,30 +7,19 @@ public class Level
     public int LevelNumber;                 // Номер уровня
     public int MaxEnemies;                  // Максимальное количество врагов на уровне
     public List<Enemy> Enemies;            // Список врагов на уровне
-    public string Objective;               // Цель для завершения уровня
+    public List<ILevelQuest> Quests;               // Цель для завершения уровня
     public bool IsCompleted;               // Завершен ли уровень
 
     // Конструктор
-    public Level(string levelName, string levelDescription, int levelNumber, int maxEnemies, string objective)
+    public Level(string levelName, string levelDescription, int levelNumber, int maxEnemies, List<ILevelQuest> quests)
     {
         LevelName = levelName;
         LevelDescription = levelDescription;
         LevelNumber = levelNumber;
         MaxEnemies = maxEnemies;
-        Objective = objective;
+        Quests = quests;
         Enemies = new List<Enemy>();
         IsCompleted = false;
-    }
-
-    // Инициализация врагов для уровня
-    public void InitializeEnemies()
-    {
-        Enemies.Clear(); // Очистка предыдущих врагов
-        for (int i = 0; i < 5; i++)
-        {
-            // Пример: создание случайных врагов для уровня
-            Enemies.Add(new Malware("Malware " + (i + 1), 40, 8));
-        }
     }
 
     // Проверка на завершение уровня

@@ -17,3 +17,7 @@ public class DefenseCard : Card
         player.AddDefense(DefenseValue);
     }
 }
+
+public static class DefenseCardsLibrary {
+    public static DefenseCard Firewall = new DefenseCard("Firewall", 3, 5);
+}

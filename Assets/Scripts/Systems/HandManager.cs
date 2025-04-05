@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class HandManager : MonoBehaviour
 {
-    public List<Card> PlayerHand;
-
     public GameObject CardPrefab; // Префаб карты
     public Transform HandArea; // Область для размещения карт
+    public GameObject DropZone;
     private void Awake()
     {
         G.handManager = this;
@@ -14,30 +14,27 @@ public class HandManager : MonoBehaviour
 
     public void SetupPlayerHand()
     {
-        Debug.Log("Настроили руку игрока.");
-        PlayerHand = new List<Card>
+        var needCard = 3 - G.playerManager.Player.Hand.Count();
+        for (int i = 0; i < needCard; i++)
         {
-            new AttackCard("Cyber Slash", 2, 10),
-            new DefenseCard("Firewall", 3, 5),
-            new ProgressCard("Data Harvest", 2, 15),
-            // Добавьте другие карты, которые будут в руке игрока
-        };
+            G.playerManager.Player.Hand.Add(G.playerManager.Player.GetRandomCardFromAvailableCards());
+        }
 
         DisplayCards();
     }
 
-    public void RemoveCard()
+    public void RemoveCard(Card card)
     {
-        // HandArea.RemoveCard(HandArea.currentCards[0]);
+        G.playerManager.Player.Hand.Remove(card);
     }
 
     private void DisplayCards()
     {
-        for (int i = 0; i < PlayerHand.Count; i++)
+        for (int i = 0; i < G.playerManager.Player.Hand.Count; i++)
         {
             // Создание карты
             GameObject cardObject = Instantiate(CardPrefab, HandArea);
-            cardObject.GetComponent<CardUI>().SetupCard(PlayerHand[i]);
+            cardObject.GetComponent<CardUI>().SetupCard(G.playerManager.Player.Hand[i]);
         }
     }
 
