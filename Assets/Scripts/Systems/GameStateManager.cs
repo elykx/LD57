@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -15,7 +16,7 @@ public enum GameState
 public class GameStateManager : MonoBehaviour
 {
     public GameState CurrentState;
-    public int CurrentLevelNumber = 1;     // Текущий уровень
+    public int CurrentLevelNumber = 1;
 
 
     private void Awake()
@@ -26,8 +27,6 @@ public class GameStateManager : MonoBehaviour
     public void SetGameState(GameState newState)
     {
         CurrentState = newState;
-
-        // В зависимости от состояния запускаем нужные действия
         switch (newState)
         {
             case GameState.MainMenu:
@@ -36,16 +35,19 @@ public class GameStateManager : MonoBehaviour
 
             case GameState.LevelSetup:
                 StartCoroutine(DelayAction());
-                G.levelManager.LoadLevel(CurrentLevelNumber);  // Загружаем уровень
+                G.levelManager.LoadLevel(CurrentLevelNumber);
                 G.gameStateManager.SetGameState(GameState.PlayerTurn);
                 break;
 
             case GameState.PlayerTurn:
                 StartPlayerTurn();
+                G.enemyManager.RemoveEnemies();
+                G.levelManager.CheckCompleteLevel();
                 break;
 
             case GameState.EnemyTurn:
-                StartEnemyTurn();
+                G.enemyManager.StartEnemyTurn();
+                G.levelManager.CheckCompleteLevel();
                 break;
 
             case GameState.LevelComplete:
@@ -60,7 +62,6 @@ public class GameStateManager : MonoBehaviour
 
     private void StartPlayerTurn()
     {
-        G.levelManager.CheckCompleteLevel();
         if (G.playerManager.Player.Health <= 0)
         {
             SetGameState(GameState.GameOver);
@@ -77,40 +78,15 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-    private void StartEnemyTurn()
-    {
-        Debug.Log("Enemy turn started.");
-
-        // Здесь враги ходят — можно сделать корутину для задержек
-        StartCoroutine(EnemyActionsRoutine());
-    }
-
     private void CompleteLevel()
     {
-        // Завершение уровня
-        // Показать победу, статистику и перейти к следующему уровню или завершить игру
+        CurrentLevelNumber++;
+        SetGameState(GameState.LevelSetup);
     }
 
     private void EndGame()
     {
-        // Завершаем игру
-        // Показываем экран Game Over
-    }
-
-    private IEnumerator EnemyActionsRoutine()
-    {
-        foreach (var enemy in G.enemyManager.Enemies)
-        {
-            Debug.Log(enemy);
-            if (enemy.Health <= 0) continue;
-
-            enemy.PerformAction(G.playerManager.Player); // Атака или действие
-
-            yield return new WaitForSeconds(0.5f); // Пауза между действиями
-        }
-
-        yield return new WaitForSeconds(0.5f); // Пауза перед передачей хода
-        SetGameState(GameState.PlayerTurn);
+        SceneManager.LoadScene("Menu");
     }
 
     IEnumerator DelayAction()

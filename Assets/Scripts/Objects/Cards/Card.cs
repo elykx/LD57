@@ -5,11 +5,11 @@ public abstract class Card
 {
     public string CardName { get; set; }
     public int Cost { get; set; }
+    public string ConsoleText;
 
     public abstract void PlayCard(Player player, Enemy target);
 }
 
-// Теги карт
 public enum CardTag
 {
     Virus,
@@ -17,7 +17,12 @@ public enum CardTag
     Protocol
 }
 
-// Базовый класс карты с тегами
+public enum VisualType
+{
+    CardCommon,
+    QuadCard,
+}
+
 public abstract class TaggedCard : Card
 {
     public List<CardTag> Tags { get; set; }
@@ -29,7 +34,6 @@ public abstract class TaggedCard : Card
     }
 }
 
-// Пример карты с тегами
 public class VirusCard : TaggedCard
 {
     public int Damage { get; set; }

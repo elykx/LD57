@@ -15,7 +15,7 @@ public class QuantumCard : Card
 
     public override void PlayCard(Player player, Enemy target)
     {
-        int choice = Random.Range(0, 2);  // Выбираем случайный эффект
+        int choice = Random.Range(0, 2);
 
         if (choice == 0)
         {

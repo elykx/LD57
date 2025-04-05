@@ -13,4 +13,11 @@ public class PlayerUI : MonoBehaviour
             playerHealthText.text = $"{player.Health} / {player.MaxHealth}";
         }
     }
+
+    void Update()
+    {
+        playerHealthText.text = $"{G.playerManager.Player.Health} / {G.playerManager.Player.MaxHealth}";
+
+    }
+
 }

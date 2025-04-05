@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 636e2e99f84c2b5499e4253c1a6a616a
+guid: 39f3b9acdf907dd47b5facc781e102d4
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Kurland
+  - Fira Code
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

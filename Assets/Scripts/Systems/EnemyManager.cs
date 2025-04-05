@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class EnemyManager : MonoBehaviour
     public GameObject EnemyPrefab;
     public Transform EnemyArea;
     public Enemy choiceEnemy;
+    private List<Enemy> toRemove = new List<Enemy>();
 
     private void Awake()
     {
@@ -20,6 +22,7 @@ public class EnemyManager : MonoBehaviour
 
     public void SetupEnemies(List<Enemy> enemies)
     {
+        Debug.Log("SetupEnemies" + enemies.Count);
         Enemies = enemies;
         choiceEnemy = enemies[0];
         DisplayEnemies();
@@ -27,10 +30,7 @@ public class EnemyManager : MonoBehaviour
 
     public void RemoveEnemy(Enemy enemy)
     {
-        Enemies.Remove(enemy);
-        if (Enemies.Count != 0){
-            choiceEnemy = Enemies[0];
-        }
+        toRemove.Add(enemy);
     }
 
     private void DisplayEnemies()
@@ -38,21 +38,43 @@ public class EnemyManager : MonoBehaviour
         foreach (Enemy enemy in Enemies)
         {
             GameObject enemyObject = Instantiate(EnemyPrefab, EnemyArea);
-            enemyObject.GetComponent<EnemyUI>().SetupEnemy(enemy);  // Пример того, как связать UI с врагом
+            enemyObject.GetComponent<EnemyUI>().SetupEnemy(enemy);
         }
     }
 
+    public void RemoveEnemies()
+    {
+        foreach (Enemy enemy in toRemove)
+        {
+            Enemies.Remove(enemy);
+        }
+        if (Enemies.Count != 0 && !Enemies.Exists(e => e == choiceEnemy))
+        {
+            choiceEnemy = Enemies[0];
+        }
+    }
 
     public void StartEnemyTurn()
     {
+        StartCoroutine(EnemyActionsRoutine());
+    }
+
+    private IEnumerator EnemyActionsRoutine()
+    {
+        yield return new WaitForSeconds(3f);
         foreach (Enemy enemy in Enemies)
         {
+            if (enemy.Health <= 0) continue;
+
             enemy.PerformAction(G.playerManager.Player);
-            if (enemy.Health <= 0)
-            {
-                Enemies.Remove(enemy);
-            }
+            G.ui.console.PrintToConsoleAdd(enemy.ConsoleText);
+
+            yield return new WaitForSeconds(2.5f);
         }
-        G.gameStateManager.SetGameState(GameState.PlayerTurn);  // Переход к следующему ходу игрока
+
+        yield return new WaitForSeconds(0.5f);
+        G.gameStateManager.SetGameState(GameState.PlayerTurn);
     }
+
+
 }

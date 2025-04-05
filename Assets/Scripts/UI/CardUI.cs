@@ -2,12 +2,11 @@ using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public TMP_Text cardNameText;
-    public TMP_Text costText;
-
     private Card currentCard;
 
     private bool isDragging = false;
@@ -17,6 +16,10 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     private Camera mainCamera;
     private Collider2D cardCollider;
     private SpriteRenderer dropZoneSR;
+    private Image image;
+
+    private static Color activeColorZone = new Color(UtilsColor.ParseHex("858585").r, UtilsColor.ParseHex("858585").g, UtilsColor.ParseHex("858585").b, 0.1f);
+    private static Color disabledColorZone = new Color(1f, 1f, 1f, 0f);
 
     private void Awake()
     {
@@ -24,6 +27,7 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         rectTransform = GetComponent<RectTransform>();
         cardCollider = GetComponent<Collider2D>();
         dropZoneSR = G.handManager.DropZone.GetComponent<SpriteRenderer>();
+        image = GetComponent<Image>();
     }
 
     public void SetupCard(Card card)
@@ -33,8 +37,6 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         if (cardNameText != null)
             cardNameText.text = card.CardName;
 
-        if (costText != null)
-            costText.text = card.Cost.ToString();
     }
 
     // Этот метод вызывается при клике на карту
@@ -49,25 +51,21 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         }
     }
 
-    // Этот метод вызывается при наведении на карту
     public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("Mouse entered on: " + currentCard.CardName);
         if (currentCard != null)
         {
             Debug.Log("Mouse entered on: " + currentCard.CardName);
-            // Здесь можно добавить анимацию с использованием PrimeTween
             Tween.Scale(transform, new Vector3(1.1f, 1.1f, 1f), 0.2f);
         }
     }
 
-    // Этот метод вызывается при убирании мыши с карты
     public void OnPointerExit(PointerEventData eventData)
     {
         if (currentCard != null)
         {
             Debug.Log("Mouse exited from: " + currentCard.CardName);
-            // Здесь можно вернуть масштаб обратно
             Tween.Scale(transform, new Vector3(1f, 1f, 1f), 0.2f);
         }
     }
@@ -91,11 +89,12 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
         if (IsDropZoneUnderMouse())
         {
-            dropZoneSR.color = UtilsColor.ParseHex("FFFFFF");
+            dropZoneSR.color = disabledColorZone;
         }
         else
         {
-            dropZoneSR.color = UtilsColor.ParseHex("858585");
+
+            dropZoneSR.color = activeColorZone;
         }
     }
 
@@ -107,10 +106,13 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
         if (IsDropZoneUnderMouse())
         {
-            dropZoneSR.color = UtilsColor.ParseHex("858585");
+            dropZoneSR.color = disabledColorZone;
             Debug.Log("Card dropped into DropArea: " + currentCard.CardName);
             currentCard.PlayCard(G.playerManager.Player, G.enemyManager.choiceEnemy);
+            G.ui.console.PrintToConsoleNew(currentCard.ConsoleText);
+            G.handManager.NewActiveCard(currentCard);
             G.handManager.RemoveCard(currentCard);
+            G.gameStateManager.SetGameState(GameState.EnemyTurn);
             Destroy(gameObject);
         }
         else

@@ -26,13 +26,11 @@ public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
         }
     }
 
-    // Этот метод вызывается при клике на карту
     public void OnPointerClick(PointerEventData eventData)
     {
         G.enemyManager.ChoiceEnemy(currentEnemy);
     }
 
-    // Этот метод вызывается при наведении на карту
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (currentEnemy != null)
@@ -42,13 +40,11 @@ public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
         }
     }
 
-    // Этот метод вызывается при убирании мыши с карты
     public void OnPointerExit(PointerEventData eventData)
     {
         if (currentEnemy != null)
         {
             Debug.Log("Mouse exited from: " + currentEnemy.Name);
-            // Здесь можно вернуть масштаб обратно
             Tween.Scale(transform, new Vector3(1f, 1f, 1f), 0.2f);
         }
     }

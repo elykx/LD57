@@ -2,15 +2,14 @@ using System.Collections.Generic;
 
 public class Level
 {
-    public string LevelName;                // Название уровня
-    public string LevelDescription;         // Описание цели уровня
-    public int LevelNumber;                 // Номер уровня
-    public int MaxEnemies;                  // Максимальное количество врагов на уровне
-    public List<Enemy> Enemies;            // Список врагов на уровне
-    public List<ILevelQuest> Quests;               // Цель для завершения уровня
-    public bool IsCompleted;               // Завершен ли уровень
+    public string LevelName;
+    public string LevelDescription;
+    public int LevelNumber;
+    public int MaxEnemies;
+    public List<Enemy> Enemies;
+    public List<ILevelQuest> Quests;
+    public bool IsCompleted;
 
-    // Конструктор
     public Level(string levelName, string levelDescription, int levelNumber, int maxEnemies, List<ILevelQuest> quests)
     {
         LevelName = levelName;
@@ -22,7 +21,6 @@ public class Level
         IsCompleted = false;
     }
 
-    // Проверка на завершение уровня
     public void CheckCompletion()
     {
         if (Enemies.Count == 0)

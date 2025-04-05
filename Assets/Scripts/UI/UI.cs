@@ -5,6 +5,7 @@ public class UI : MonoBehaviour
 {
     public LevelUI levelUI;
     public PlayerUI playerUI;
+    public ConsoleTyper console;
     public TMP_Text gameState;
     private void Awake()
     {
