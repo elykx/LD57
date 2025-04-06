@@ -6,7 +6,7 @@ public class EnemyManager : MonoBehaviour
 {
     public List<Enemy> Enemies;
     public GameObject EnemyPrefab;
-    public Transform EnemyArea;
+    public List<Transform> SpawnPoints;
     public Enemy choiceEnemy;
     private List<Enemy> toRemove = new List<Enemy>();
 
@@ -35,11 +35,24 @@ public class EnemyManager : MonoBehaviour
 
     private void DisplayEnemies()
     {
-        foreach (Enemy enemy in Enemies)
+        // Перемешиваем позиции
+        List<Transform> availablePoints = new List<Transform>(SpawnPoints);
+        Shuffle.ShuffleList(availablePoints);
+
+        for (int i = 0; i < Enemies.Count; i++)
         {
-            GameObject enemyObject = Instantiate(EnemyPrefab, EnemyArea);
-            enemyObject.GetComponent<EnemyUI>().SetupEnemy(enemy);
+            Transform spawnPoint = availablePoints[i];
+            GameObject enemyObject = Instantiate(EnemyPrefab, spawnPoint.position, Quaternion.identity);
+
+            EnemyUI enemyUI = enemyObject.GetComponent<EnemyUI>();
+            enemyUI.SetupEnemy(Enemies[i]);
+
+            // Сохраняем позицию (если надо использовать для порядка хода)
+            Enemies[i].SpawnIndex = SpawnPoints.IndexOf(spawnPoint);
         }
+
+        // Можно отсортировать список врагов по SpawnIndex, если порядок хода важен:
+        Enemies.Sort((a, b) => a.SpawnIndex.CompareTo(b.SpawnIndex));
     }
 
     public void RemoveEnemies()

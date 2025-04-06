@@ -17,7 +17,8 @@ public class Player
         MaxHealth = 25;
         Progress = 0;
         Hand = new List<Card>();
-        AvailableCards = new() { AttackCardsLibrary.CyberSlash, DefenseCardsLibrary.Firewall, ProgressCardLibrary.DataHarvest };
+        AvailableCards = new() { AttackCardsLibrary.CyberSlash };
+        // , DefenseCardsLibrary.Firewall, ProgressCardLibrary.DataHarvest 
     }
 
     public void TakeDamage(int damage)
@@ -38,11 +39,6 @@ public class Player
     public void AddDaemonEffect(DaemonCard daemonCard)
     {
         activeDaemonCards.Add(daemonCard);
-    }
-
-    public void PlayCard(Card card, Enemy target)
-    {
-        card.PlayCard(this, target);
     }
 
     public Card GetRandomCardFromAvailableCards()

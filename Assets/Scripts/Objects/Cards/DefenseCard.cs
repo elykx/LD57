@@ -4,18 +4,21 @@ public class DefenseCard : Card
 {
     public int DefenseValue { get; set; }
 
-    public DefenseCard(string name, int cost, int defenseValue, string consoleText)
+    public DefenseCard(string name, int cost, int defenseValue, string consoleText, int progress)
     {
         CardName = name;
         Cost = cost;
         DefenseValue = defenseValue;
         ConsoleText = consoleText;
+        Progress = progress;
     }
 
-    public override void PlayCard(Player player, Enemy target)
+    public override void PlayCard(Player player, Enemy target, Level level)
     {
         Debug.Log($"Использована карта защиты {CardName}, защита: {DefenseValue}");
         player.AddDefense(DefenseValue);
+        level.AddProgress(Progress);
+
     }
 }
 
@@ -26,5 +29,5 @@ public static class DefenseCardsLibrary
     "> initiating firewall.shield\n" +
     "> binding to port 443\n" +
     "> incoming threats: redirected\n" +
-    "> [OK] active protection enabled (v2.1.4)");
+    "> [OK] active protection enabled (v2.1.4)", 1);
 }

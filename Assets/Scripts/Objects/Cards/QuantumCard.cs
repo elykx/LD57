@@ -13,7 +13,7 @@ public class QuantumCard : Card
         BlockOption2 = blockOption2;
     }
 
-    public override void PlayCard(Player player, Enemy target)
+    public override void PlayCard(Player player, Enemy target, Level level)
     {
         int choice = Random.Range(0, 2);
 

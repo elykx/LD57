@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,9 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     private Camera mainCamera;
     private Collider2D cardCollider;
     private SpriteRenderer dropZoneSR;
+    private List<SpriteRenderer> enemyDropZones = new List<SpriteRenderer>();
+    private List<SpriteRenderer> activeEnemyDropZones = new List<SpriteRenderer>();
+
     private Image image;
 
     private static Color activeColorZone = new Color(UtilsColor.ParseHex("858585").r, UtilsColor.ParseHex("858585").g, UtilsColor.ParseHex("858585").b, 0.1f);
@@ -27,6 +31,10 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         rectTransform = GetComponent<RectTransform>();
         cardCollider = GetComponent<Collider2D>();
         dropZoneSR = G.handManager.DropZone.GetComponent<SpriteRenderer>();
+        foreach (GameObject zone in G.handManager.AttackDropZones)
+        {
+            enemyDropZones.Add(zone.GetComponent<SpriteRenderer>());
+        }
         image = GetComponent<Image>();
     }
 
@@ -39,7 +47,6 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     }
 
-    // Этот метод вызывается при клике на карту
     public void OnPointerClick(PointerEventData eventData)
     {
         if (currentCard != null)
@@ -53,10 +60,8 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse entered on: " + currentCard.CardName);
         if (currentCard != null)
         {
-            Debug.Log("Mouse entered on: " + currentCard.CardName);
             Tween.Scale(transform, new Vector3(1.1f, 1.1f, 1f), 0.2f);
         }
     }
@@ -65,7 +70,6 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     {
         if (currentCard != null)
         {
-            Debug.Log("Mouse exited from: " + currentCard.CardName);
             Tween.Scale(transform, new Vector3(1f, 1f, 1f), 0.2f);
         }
     }
@@ -76,7 +80,6 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         originalPosition = rectTransform.position;
         isDragging = true;
         cardCollider.enabled = false;
-
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -87,14 +90,27 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         worldPos.z = 0;
         transform.position = worldPos;
 
-        if (IsDropZoneUnderMouse())
+        if (currentCard is AttackCard attackCard)
         {
-            dropZoneSR.color = disabledColorZone;
+            for (int i = 0; i < G.handManager.AttackDropZones.Count; i++)
+            {
+                int index = i;
+                if (G.enemyManager.Enemies.Exists(e => e.SpawnIndex == index))
+                {
+                    G.handManager.AttackDropZones[i].GetComponent<SpriteRenderer>().color = activeColorZone;
+                }
+            }
         }
         else
         {
-
-            dropZoneSR.color = activeColorZone;
+            if (IsDropZoneUnderMouse())
+            {
+                dropZoneSR.color = disabledColorZone;
+            }
+            else
+            {
+                dropZoneSR.color = activeColorZone;
+            }
         }
     }
 
@@ -103,25 +119,67 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         if (G.gameStateManager.CurrentState != GameState.PlayerTurn) return;
         isDragging = false;
 
-
-        if (IsDropZoneUnderMouse())
+        if (currentCard is AttackCard attackCard)
         {
-            dropZoneSR.color = disabledColorZone;
-            Debug.Log("Card dropped into DropArea: " + currentCard.CardName);
-            currentCard.PlayCard(G.playerManager.Player, G.enemyManager.choiceEnemy);
-            G.ui.console.PrintToConsoleNew(currentCard.ConsoleText);
-            G.handManager.NewActiveCard(currentCard);
-            G.handManager.RemoveCard(currentCard);
-            G.gameStateManager.SetGameState(GameState.EnemyTurn);
-            Destroy(gameObject);
+            for (int i = 0; i < G.handManager.AttackDropZones.Count; i++)
+            {
+                int index = i;
+                if (G.enemyManager.Enemies.Exists(e => e.SpawnIndex == index))
+                {
+                    if (CheckDropZoneUnderMouse(G.handManager.AttackDropZones[i]))
+                    {
+                        G.handManager.AttackDropZones[i].GetComponent<SpriteRenderer>().color = disabledColorZone;
+                        var choiceEnemy = G.enemyManager.Enemies.Find(e => e.SpawnIndex == index);
+                        currentCard.PlayCard(G.playerManager.Player, choiceEnemy, G.levelManager.CurrentLevel);
+                        G.ui.console.PrintToConsoleNew(currentCard.ConsoleText);
+                        G.handManager.NewActiveCard(currentCard);
+                        G.handManager.RemoveCard(currentCard);
+                        G.gameStateManager.SetGameState(GameState.EnemyTurn);
+                        Destroy(gameObject);
+                    }
+                    else
+                    {
+                        G.handManager.AttackDropZones[i].GetComponent<SpriteRenderer>().color = disabledColorZone;
+                        Tween.Position(transform, originalPosition, 0.2f);
+                    }
+                }
+            }
         }
         else
         {
-            Tween.Position(transform, originalPosition, 0.2f);
+            if (IsDropZoneUnderMouse())
+            {
+                dropZoneSR.color = disabledColorZone;
+                currentCard.PlayCard(G.playerManager.Player, G.enemyManager.choiceEnemy, G.levelManager.CurrentLevel);
+                G.ui.console.PrintToConsoleNew(currentCard.ConsoleText);
+                G.handManager.NewActiveCard(currentCard);
+                G.handManager.RemoveCard(currentCard);
+                G.gameStateManager.SetGameState(GameState.EnemyTurn);
+                Destroy(gameObject);
+            }
+            else
+            {
+                Tween.Position(transform, originalPosition, 0.2f);
+            }
         }
 
-        cardCollider.enabled = true;
 
+        cardCollider.enabled = true;
+    }
+
+    private bool CheckDropZoneUnderMouse(GameObject zone)
+    {
+        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+        foreach (var hit in hits)
+        {
+            if (hit.collider.CompareTag("DropZone"))
+            {
+                return hit.collider.gameObject == zone;
+            }
+        }
+
+        return false;
     }
 
     private bool IsDropZoneUnderMouse()

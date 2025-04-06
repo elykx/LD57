@@ -11,7 +11,7 @@ public class DaemonCard : Card
         DamagePerTurn = damagePerTurn;
     }
 
-    public override void PlayCard(Player player, Enemy target)
+    public override void PlayCard(Player player, Enemy target, Level level)
     {
         Debug.Log($"Пассивная карта {CardName} активирована. Каждый ход наносит {DamagePerTurn} урона.");
         player.AddDaemonEffect(this);

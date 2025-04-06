@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 956d15291ae58be498328f9d02e89bb9
+guid: 3364e2fe882dc614ea361a92ac29d618
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7042847911465117151
-    second: menu_0
+      213: -4258568916603148739
+    second: indicator_enemy_0
+  - first:
+      213: -7532444081642739457
+    second: indicator_enemy_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +78,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -126,13 +129,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: menu_0
+      name: indicator_enemy_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1920
-        height: 1080
+        width: 58
+        height: 109
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +144,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fd5eaf16cd83db160800000000000000
-      internalID: 7042847911465117151
+      spriteID: d36695a122686e4c0800000000000000
+      internalID: -4258568916603148739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: indicator_enemy_1
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 0
+        width: 58
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff8e03f2402677790800000000000000
+      internalID: -7532444081642739457
       vertices: []
       indices: 
       edges: []
@@ -160,7 +185,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      indicator_enemy_0: -4258568916603148739
+      indicator_enemy_1: -7532444081642739457
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

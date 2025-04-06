@@ -9,6 +9,7 @@ public class HandManager : MonoBehaviour
     public GameObject DataHarvest;
     public Transform HandArea;
     public GameObject DropZone;
+    public List<GameObject> AttackDropZones;
     public Transform activeArea;
     public ActiveCardUI activeCardUI;
     private void Awake()
@@ -25,7 +26,6 @@ public class HandManager : MonoBehaviour
             var card = G.playerManager.Player.Hand[i];
             SpawnCardUi(card, HandArea);
         }
-
     }
 
     public void NewActiveCard(Card card)

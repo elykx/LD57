@@ -4,18 +4,20 @@ public class AttackCard : Card
 {
     public int Damage { get; set; }
 
-    public AttackCard(string name, int cost, int damage, string consoleText)
+    public AttackCard(string name, int cost, int damage, string consoleText, int progress)
     {
         CardName = name;
         Cost = cost;
         Damage = damage;
         ConsoleText = consoleText;
+        Progress = progress;
     }
 
-    public override void PlayCard(Player player, Enemy target)
+    public override void PlayCard(Player player, Enemy target, Level level)
     {
-        Debug.Log($"Использована карта атаки {CardName}, урон: {Damage}");
         target.TakeDamage(Damage);
+        level.AddProgress(Progress);
+
     }
 }
 
@@ -27,5 +29,5 @@ public static class AttackCardsLibrary
     "> executing [cyber_slash.vx]\n" +
     "> ███████████████▓▒░ done.\n" +
     "> damage packet delivered: 27μB\n" +
-    "> node integrity reduced.");
+    "> node integrity reduced.", 1);
 }

@@ -5,9 +5,10 @@ public abstract class Card
 {
     public string CardName { get; set; }
     public int Cost { get; set; }
+    public int Progress;
     public string ConsoleText;
 
-    public abstract void PlayCard(Player player, Enemy target);
+    public abstract void PlayCard(Player player, Enemy target, Level level);
 }
 
 public enum CardTag
@@ -43,8 +44,9 @@ public class VirusCard : TaggedCard
         Tags = new List<CardTag> { CardTag.Virus };
     }
 
-    public override void PlayCard(Player player, Enemy target)
+    public override void PlayCard(Player player, Enemy target, Level level)
     {
         target.TakeDamage(Damage);
+        level.AddProgress(Progress);
     }
 }

@@ -22,6 +22,7 @@ public class GameStateManager : MonoBehaviour
     private void Awake()
     {
         G.gameStateManager = this;
+        Debug.Log("Init Game State Manager");
     }
 
     public void SetGameState(GameState newState)
@@ -47,7 +48,6 @@ public class GameStateManager : MonoBehaviour
 
             case GameState.EnemyTurn:
                 G.enemyManager.StartEnemyTurn();
-                G.levelManager.CheckCompleteLevel();
                 break;
 
             case GameState.LevelComplete:
@@ -65,11 +65,6 @@ public class GameStateManager : MonoBehaviour
         if (G.playerManager.Player.Health <= 0)
         {
             SetGameState(GameState.GameOver);
-            return;
-        }
-        if (G.levelManager.CurrentLevel.IsCompleted)
-        {
-            SetGameState(GameState.LevelComplete);
             return;
         }
         if (G.playerManager.Player.Hand.Count() < 3)

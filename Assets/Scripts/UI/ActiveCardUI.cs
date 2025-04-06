@@ -5,8 +5,6 @@ using UnityEngine.EventSystems;
 
 public class ActiveCardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public TMP_Text cardNameText;
-    public TMP_Text costText;
 
     private Card currentCard;
     private SpriteRenderer spriteRenderer;
@@ -20,13 +18,6 @@ public class ActiveCardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     {
         spriteRenderer.enabled = true;
         currentCard = card;
-
-        if (cardNameText != null)
-            cardNameText.text = currentCard.CardName;
-
-        if (costText != null)
-            costText.text = currentCard.Cost.ToString();
-
         AnimateCard();
     }
 

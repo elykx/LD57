@@ -2,11 +2,18 @@ using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public TMP_Text enemyNameText;
+    private SpriteRenderer sr;
     private Enemy currentEnemy;
+
+    private void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+    }
 
     public void SetupEnemy(Enemy enemy)
     {
@@ -14,6 +21,10 @@ public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 
         if (enemyNameText != null)
             enemyNameText.text = enemy.Name;
+        if (enemy.Sprite != null)
+        {
+            sr.sprite = enemy.Sprite;
+        }
 
     }
 
@@ -35,7 +46,6 @@ public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     {
         if (currentEnemy != null)
         {
-            Debug.Log("Mouse entered on: " + currentEnemy.Name);
             Tween.Scale(transform, new Vector3(1.1f, 1.1f, 1f), 0.2f);
         }
     }
@@ -44,7 +54,6 @@ public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     {
         if (currentEnemy != null)
         {
-            Debug.Log("Mouse exited from: " + currentEnemy.Name);
             Tween.Scale(transform, new Vector3(1f, 1f, 1f), 0.2f);
         }
     }
