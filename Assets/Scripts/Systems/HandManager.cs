@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class HandManager : MonoBehaviour
 {
-    public GameObject CyberSlashCard;
-    public GameObject FirewallCard;
-    public GameObject DataHarvest;
+    public GameObject ActiveCard;
+    public GameObject CardBase;
     public Transform HandArea;
     public GameObject DropZone;
     public List<GameObject> AttackDropZones;
     public Transform activeArea;
-    public ActiveCardUI activeCardUI;
+    private GameObject activeCard;
+    public AudioSource audioSourceCarthridge;
     private void Awake()
     {
         G.handManager = this;
@@ -19,13 +19,20 @@ public class HandManager : MonoBehaviour
 
     public void SetupPlayerHand()
     {
-        var needCard = 3 - G.playerManager.Player.Hand.Count();
+        var needCard = G.levelManager.CurrentLevel.CardInHand - G.playerManager.Player.Hand.Count();
         for (int i = 0; i < needCard; i++)
         {
-            G.playerManager.Player.Hand.Add(G.playerManager.Player.GetRandomCardFromAvailableCards());
+            G.playerManager.Player.Hand.Add(SessionData.Instance.GetRandomCardFromAvailableCards());
             var card = G.playerManager.Player.Hand[i];
             SpawnCardUi(card, HandArea);
         }
+    }
+
+    public void AddCardToHand(Card card)
+    {
+        if (G.playerManager.Player.Hand.Count() >= 5) return;
+        G.playerManager.Player.Hand.Add(card);
+        SpawnCardUi(card, HandArea);
     }
 
     public void NewActiveCard(Card card)
@@ -49,52 +56,15 @@ public class HandManager : MonoBehaviour
 
     public void SpawnCardUi(Card card, Transform parent)
     {
-        if (card == AttackCardsLibrary.CyberSlash)
-        {
-            GameObject cardObject = Instantiate(CyberSlashCard, parent);
-            cardObject.GetComponent<CardUI>().SetupCard(card);
-        }
-        else if (card == DefenseCardsLibrary.Firewall)
-        {
-            GameObject cardObject = Instantiate(FirewallCard, parent);
-            cardObject.GetComponent<CardUI>().SetupCard(card);
-        }
-        else if (card == ProgressCardLibrary.DataHarvest)
-        {
-            GameObject cardObject = Instantiate(DataHarvest, parent);
-            cardObject.GetComponent<CardUI>().SetupCard(card);
-        }
+        GameObject cardObject = Instantiate(CardBase, parent);
+        cardObject.GetComponent<CardUI>().SetupCard(card);
     }
 
     public void SpawnActiveCardUi(Card card, Transform parent)
     {
-        if (card == AttackCardsLibrary.CyberSlash)
-        {
-            GameObject cardObject = Instantiate(CyberSlashCard, parent);
-            var cardUI = cardObject.GetComponent<CardUI>();
-            Destroy(cardUI);
-            activeCardUI = cardObject.AddComponent<ActiveCardUI>();
-            activeCardUI.SetupCard(card);
-            cardObject.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-
-        }
-        else if (card == DefenseCardsLibrary.Firewall)
-        {
-            GameObject cardObject = Instantiate(FirewallCard, parent);
-            var cardUI = cardObject.GetComponent<CardUI>();
-            Destroy(cardUI);
-            activeCardUI = cardObject.AddComponent<ActiveCardUI>();
-            activeCardUI.SetupCard(card);
-            cardObject.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-        }
-        else if (card == ProgressCardLibrary.DataHarvest)
-        {
-            GameObject cardObject = Instantiate(DataHarvest, parent);
-            var cardUI = cardObject.GetComponent<CardUI>();
-            Destroy(cardUI);
-            activeCardUI = cardObject.AddComponent<ActiveCardUI>();
-            activeCardUI.SetupCard(card);
-            cardObject.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-        }
+        Destroy(activeCard);
+        activeCard = Instantiate(ActiveCard, parent);
+        activeCard.GetComponent<ActiveCardUI>().SetupCard(card, audioSourceCarthridge);
+        activeCard.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
     }
 }

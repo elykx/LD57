@@ -272,6 +272,72 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: c_worm
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 397
+        width: 204
+        height: 175
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f70daedb83945e74695f328efd1a4e05
+      internalID: -17286694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: c_attack
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 200
+        width: 208
+        height: 175
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85f36bd5396f0504386bd52082c03ffb
+      internalID: -619153196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: c_delay
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 2
+        width: 202
+        height: 171
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e1c30c88f6871eb4ab734c27f3c99018
+      internalID: -410039652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -286,12 +352,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      c_attack: -619153196
       c_backdoor: 5610456433865955097
       c_bandBoost: 8963368785945452489
+      c_delay: -410039652
       c_encrypt: -2922113337684369405
       c_firewall: 7024648501981196136
       c_ping: -1145144668836272637
       c_trace: -7415955986125602904
+      c_worm: -17286694
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 
 public class ActiveCardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-
     private Card currentCard;
     private SpriteRenderer spriteRenderer;
 
@@ -14,10 +13,13 @@ public class ActiveCardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void SetupCard(Card card)
+    public void SetupCard(Card card, AudioSource audioSource)
     {
+        audioSource.Play();
         spriteRenderer.enabled = true;
         currentCard = card;
+        if (card.Icon != null)
+            spriteRenderer.sprite = card.Icon;
         AnimateCard();
     }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -7,10 +8,5 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         G.playerManager = this;
-    }
-
-    public void SetupPlayerHand()
-    {
-        G.handManager.SetupPlayerHand();
     }
 }

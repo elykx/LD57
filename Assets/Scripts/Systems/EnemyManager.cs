@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -69,6 +70,18 @@ public class EnemyManager : MonoBehaviour
 
     public void StartEnemyTurn()
     {
+        if (Enemies.Count == 0)
+        {
+            var enemyFactories = G.levelManager.AvailableEnemies.Values.ToList();
+
+            SetupEnemies(Enumerable.Range(0, 2)
+            .Select(_ =>
+            {
+                var randomIndex = Random.Range(0, enemyFactories.Count);
+                return enemyFactories[randomIndex](); // вызов Func<Enemy>
+            })
+            .ToList());
+        }
         StartCoroutine(EnemyActionsRoutine());
     }
 

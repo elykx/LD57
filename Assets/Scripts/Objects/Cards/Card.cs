@@ -4,9 +4,11 @@ using UnityEngine;
 public abstract class Card
 {
     public string CardName { get; set; }
+    public string Description { get; set; }
     public int Cost { get; set; }
     public int Progress;
     public string ConsoleText;
+    public Sprite Icon;
 
     public abstract void PlayCard(Player player, Enemy target, Level level);
 }

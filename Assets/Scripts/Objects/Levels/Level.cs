@@ -11,9 +11,13 @@ public class Level
     public List<ILevelQuest> Quests;
     public int ProgressQuest;
     public int ProgressCurrent;
+    public int Energy;
+    public int MaxEnergy;
+    public int CardInHand;
     public bool IsCompleted;
 
-    public Level(string levelName, string levelDescription, int levelNumber, int maxEnemies, List<ILevelQuest> quests, int progress)
+    public Level(string levelName, string levelDescription, int levelNumber, int maxEnemies, List<ILevelQuest> quests, int progress, int energy,
+        int cardInHand)
     {
         LevelName = levelName;
         LevelDescription = levelDescription;
@@ -24,12 +28,14 @@ public class Level
         IsCompleted = false;
         ProgressQuest = progress;
         ProgressCurrent = 0;
+        Energy = energy;
+        MaxEnergy = energy;
+        CardInHand = cardInHand;
     }
 
     public void CheckCompletion()
     {
-        Debug.Log("check compete level" + "count " + Enemies.Count);
-        if (Enemies.Count == 0)
+        if (ProgressCurrent >= ProgressQuest)
         {
             IsCompleted = true;
         }
@@ -42,6 +48,15 @@ public class Level
         {
             ProgressCurrent = ProgressQuest;
             IsCompleted = true;
+        }
+    }
+
+    public void MinusEnergy(int energy)
+    {
+        Energy -= energy;
+        if (Energy <= 0)
+        {
+            Energy = 0;
         }
     }
 }

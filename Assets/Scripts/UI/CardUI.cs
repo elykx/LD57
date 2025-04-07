@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PrimeTween;
 using TMPro;
@@ -7,7 +8,14 @@ using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public TMP_Text cardNameText;
+    public SpriteRenderer damage;
+    public SpriteRenderer connection;
+    public SpriteRenderer progress;
+    public TMP_Text cost;
+    public TMP_Text stat;
+
+
+
     private Card currentCard;
 
     private bool isDragging = false;
@@ -20,8 +28,8 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     private List<SpriteRenderer> enemyDropZones = new List<SpriteRenderer>();
     private List<SpriteRenderer> activeEnemyDropZones = new List<SpriteRenderer>();
 
-    private Image image;
-
+    private SpriteRenderer sr;
+    private TooltipTrigger tooltipTrigger;
     private static Color activeColorZone = new Color(UtilsColor.ParseHex("858585").r, UtilsColor.ParseHex("858585").g, UtilsColor.ParseHex("858585").b, 0.1f);
     private static Color disabledColorZone = new Color(1f, 1f, 1f, 0f);
 
@@ -35,16 +43,41 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         {
             enemyDropZones.Add(zone.GetComponent<SpriteRenderer>());
         }
-        image = GetComponent<Image>();
+        sr = GetComponent<SpriteRenderer>();
+        tooltipTrigger = GetComponent<TooltipTrigger>();
     }
 
     public void SetupCard(Card card)
     {
         currentCard = card;
 
-        if (cardNameText != null)
-            cardNameText.text = card.CardName;
+        if (card.Icon != null)
+            sr.sprite = card.Icon;
 
+        cost.text = card.Cost.ToString();
+        if (card is AttackCard)
+        {
+            progress.enabled = false;
+            damage.enabled = true;
+            connection.enabled = false;
+            stat.text = ((AttackCard)card).Damage.ToString();
+        }
+        else if (card is ProgressCard)
+        {
+            progress.enabled = true;
+            damage.enabled = false;
+            connection.enabled = false;
+            stat.text = ((ProgressCard)card).Progress.ToString();
+        }
+        else if (card is DefenseCard)
+        {
+            progress.enabled = false;
+            damage.enabled = false;
+            connection.enabled = true;
+            stat.text = ((DefenseCard)card).DefenseValue.ToString();
+        }
+        tooltipTrigger.tooltipTitle = card.CardName;
+        tooltipTrigger.tooltipContent = card.Description;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -126,7 +159,7 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
                 int index = i;
                 if (G.enemyManager.Enemies.Exists(e => e.SpawnIndex == index))
                 {
-                    if (CheckDropZoneUnderMouse(G.handManager.AttackDropZones[i]))
+                    if (CheckDropZoneUnderMouse(G.handManager.AttackDropZones[i]) && G.levelManager.CurrentLevel.Energy >= currentCard.Cost)
                     {
                         G.handManager.AttackDropZones[i].GetComponent<SpriteRenderer>().color = disabledColorZone;
                         var choiceEnemy = G.enemyManager.Enemies.Find(e => e.SpawnIndex == index);
@@ -147,7 +180,7 @@ public class CardUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         }
         else
         {
-            if (IsDropZoneUnderMouse())
+            if (IsDropZoneUnderMouse() && G.levelManager.CurrentLevel.Energy >= currentCard.Cost)
             {
                 dropZoneSR.color = disabledColorZone;
                 currentCard.PlayCard(G.playerManager.Player, G.enemyManager.choiceEnemy, G.levelManager.CurrentLevel);

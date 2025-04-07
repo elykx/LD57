@@ -6,12 +6,15 @@ public class ConsoleTyper : MonoBehaviour
 {
     public TextMeshProUGUI consoleText;
     public float delay = 0.02f;
+    public AudioSource consoleSound;
 
     private Coroutine typingCoroutineNew;
     private Coroutine typingCoroutineAdd;
 
     public void PrintToConsoleNew(string fullText)
     {
+        consoleSound.Stop();
+        consoleSound.Play();
         if (typingCoroutineNew != null)
             StopCoroutine(typingCoroutineNew);
         if (typingCoroutineAdd != null)
@@ -22,6 +25,8 @@ public class ConsoleTyper : MonoBehaviour
 
     public void PrintToConsoleAdd(string fullText)
     {
+        consoleSound.Stop();
+        consoleSound.Play();
         if (typingCoroutineAdd != null)
         {
             StopCoroutine(typingCoroutineAdd);
@@ -29,6 +34,7 @@ public class ConsoleTyper : MonoBehaviour
         }
         else
         {
+            consoleSound.Play();
             typingCoroutineAdd = StartCoroutine(AddTypeText(fullText));
         }
     }

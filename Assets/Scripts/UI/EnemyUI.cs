@@ -6,25 +6,41 @@ using UnityEngine.UI;
 
 public class EnemyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public TMP_Text enemyNameText;
+    public SpriteRenderer damage;
+    public SpriteRenderer def;
+    public TMP_Text damageText;
+    public TMP_Text defText;
+
     private SpriteRenderer sr;
     private Enemy currentEnemy;
+    private TooltipTrigger tooltipTrigger;
 
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        tooltipTrigger = GetComponent<TooltipTrigger>();
     }
 
     public void SetupEnemy(Enemy enemy)
     {
         currentEnemy = enemy;
 
-        if (enemyNameText != null)
-            enemyNameText.text = enemy.Name;
         if (enemy.Sprite != null)
         {
             sr.sprite = enemy.Sprite;
         }
+
+        damageText.text = enemy.Damage.ToString();
+        if (enemy is SystemDefender)
+        {
+            def.enabled = true;
+            defText.text = ((SystemDefender)enemy).Defense.ToString();
+        } else {
+            def.enabled = false;
+            defText.text = "";
+        }
+        tooltipTrigger.tooltipTitle = enemy.Name;
+        tooltipTrigger.tooltipContent = enemy.Description;
 
     }
 

@@ -16,7 +16,6 @@ public enum GameState
 public class GameStateManager : MonoBehaviour
 {
     public GameState CurrentState;
-    public int CurrentLevelNumber = 1;
 
 
     private void Awake()
@@ -36,11 +35,12 @@ public class GameStateManager : MonoBehaviour
 
             case GameState.LevelSetup:
                 StartCoroutine(DelayAction());
-                G.levelManager.LoadLevel(CurrentLevelNumber);
+                G.levelManager.LoadLevel(SessionData.Instance.currentLevel);
                 G.gameStateManager.SetGameState(GameState.PlayerTurn);
                 break;
 
             case GameState.PlayerTurn:
+                G.levelManager.CheckEnergy();
                 StartPlayerTurn();
                 G.enemyManager.RemoveEnemies();
                 G.levelManager.CheckCompleteLevel();
@@ -67,7 +67,7 @@ public class GameStateManager : MonoBehaviour
             SetGameState(GameState.GameOver);
             return;
         }
-        if (G.playerManager.Player.Hand.Count() < 3)
+        if (G.playerManager.Player.Hand.Count() == 0)
         {
             G.handManager.SetupPlayerHand();
         }
@@ -75,8 +75,9 @@ public class GameStateManager : MonoBehaviour
 
     private void CompleteLevel()
     {
-        CurrentLevelNumber++;
-        SetGameState(GameState.LevelSetup);
+        SessionData.Instance.currentLevel++;
+        SceneManager.LoadScene("Menu");
+        // SetGameState(GameState.LevelSetup);
     }
 
     private void EndGame()
